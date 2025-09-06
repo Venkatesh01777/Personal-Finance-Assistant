@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { analyticsService } from '../services/analytics';
 import { useAppStore } from '../store';
 import SpendingTrendsChart from '../components/charts/SpendingTrendsChart';
@@ -14,7 +14,6 @@ import {
 
 const DashboardPage: React.FC = () => {
   const { isAuthenticated, isAuthLoading } = useAppStore();
-  const queryClient = useQueryClient();
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'quarter' | 'year'>('year');
 
   // Fetch dashboard data only when authenticated and not loading
@@ -42,7 +41,7 @@ const DashboardPage: React.FC = () => {
   if (statsLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 dark:border-primary-400"></div>
       </div>
     );
   }
@@ -54,8 +53,8 @@ const DashboardPage: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-400">
             Welcome back! Here's what's happening with your finances.
           </p>
         </div>
@@ -63,14 +62,14 @@ const DashboardPage: React.FC = () => {
         <div className="flex items-center gap-4">
           {/* Period Selector */}
           <div className="flex items-center gap-2">
-            <label htmlFor="period-select" className="text-sm font-medium text-gray-700">
+            <label htmlFor="period-select" className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Period:
             </label>
             <select
               id="period-select"
               value={selectedPeriod}
               onChange={(e) => setSelectedPeriod(e.target.value as 'week' | 'month' | 'quarter' | 'year')}
-              className="block w-32 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              className="block w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
             >
               <option value="week">This Week</option>
               <option value="month">This Month</option>
@@ -78,55 +77,27 @@ const DashboardPage: React.FC = () => {
               <option value="year">This Year</option>
             </select>
           </div>
-          
-          {/* Debug Panel */}
-          <div className="flex gap-2">
-            <button
-              onClick={async () => {
-                queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
-                queryClient.invalidateQueries({ queryKey: ['spending-trends'] });
-              }}
-              className="px-3 py-1 bg-green-500 text-white rounded text-sm"
-            >
-              Refresh Data
-            </button>
-          <button
-            onClick={async () => {
-              try {
-                const response = await analyticsService.getDashboardOverview();
-                console.log('Direct API Test - Dashboard:', response);
-                alert('Check console for API response');
-              } catch (error) {
-                console.error('Direct API Test Error:', error);
-                alert('API Error - check console');
-              }
-            }}
-            className="px-3 py-1 bg-blue-500 text-white rounded text-sm"
-          >
-            Test API
-          </button>
-          </div>
         </div>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Income */}
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <ArrowTrendingUpIcon className="h-8 w-8 text-green-600" />
+              <ArrowTrendingUpIcon className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
             <div className="ml-5 w-0 flex-1">
               <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">
+                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                   Total Income
                 </dt>
                 <dd className="flex items-baseline">
-                  <div className="text-2xl font-semibold text-gray-900">
+                  <div className="text-2xl font-semibold text-gray-900 dark:text-white">
                     ${stats?.summary.income.total?.toLocaleString() || '0'}
                   </div>
-                  <div className="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                  <div className="ml-2 flex items-baseline text-sm font-semibold text-green-600 dark:text-green-400">
                     +12.5%
                   </div>
                 </dd>
@@ -136,25 +107,25 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Total Expenses */}
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <ArrowTrendingDownIcon className="h-8 w-8 text-red-600" />
+              <ArrowTrendingDownIcon className="h-8 w-8 text-red-600 dark:text-red-400" />
             </div>
             <div className="ml-5 w-0 flex-1">
               <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">
+                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                   Total Expenses
                 </dt>
                 <dd className="flex items-baseline">
-                  <div className="text-2xl font-semibold text-gray-900">
+                  <div className="text-2xl font-semibold text-gray-900 dark:text-white">
                     ${stats?.summary.expenses.total?.toLocaleString() || '0'}
                     {/* Debug: Show raw value */}
-                    <span className="text-xs text-gray-400 ml-2">
+                    <span className="text-xs text-gray-400 dark:text-gray-500 ml-2">
                       (Raw: {stats?.summary.expenses.total})
                     </span>
                   </div>
-                  <div className="ml-2 flex items-baseline text-sm font-semibold text-red-600">
+                  <div className="ml-2 flex items-baseline text-sm font-semibold text-red-600 dark:text-red-400">
                     -3.2%
                   </div>
                 </dd>
@@ -164,21 +135,21 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Net Balance */}
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <BanknotesIcon className="h-8 w-8 text-blue-600" />
+              <BanknotesIcon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
             </div>
             <div className="ml-5 w-0 flex-1">
               <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">
+                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                   Net Balance
                 </dt>
                 <dd className="flex items-baseline">
-                  <div className="text-2xl font-semibold text-gray-900">
+                  <div className="text-2xl font-semibold text-gray-900 dark:text-white">
                     ${stats?.summary.balance?.toLocaleString() || '0'}
                   </div>
-                  <div className="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                  <div className="ml-2 flex items-baseline text-sm font-semibold text-green-600 dark:text-green-400">
                     +8.1%
                   </div>
                 </dd>
@@ -188,21 +159,21 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Receipts Processed */}
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <ReceiptPercentIcon className="h-8 w-8 text-purple-600" />
+              <ReceiptPercentIcon className="h-8 w-8 text-purple-600 dark:text-purple-400" />
             </div>
             <div className="ml-5 w-0 flex-1">
               <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">
+                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                   Receipts Processed
                 </dt>
                 <dd className="flex items-baseline">
-                  <div className="text-2xl font-semibold text-gray-900">
+                  <div className="text-2xl font-semibold text-gray-900 dark:text-white">
                     {stats?.receiptSummary.processed || 0}
                   </div>
-                  <div className="ml-2 flex items-baseline text-sm font-semibold text-yellow-600">
+                  <div className="ml-2 flex items-baseline text-sm font-semibold text-yellow-600 dark:text-yellow-400">
                     {stats?.receiptSummary.pending || 0} pending
                   </div>
                 </dd>
@@ -215,13 +186,13 @@ const DashboardPage: React.FC = () => {
       {/* Charts and Analytics */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Spending Trends */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Spending Trends
           </h3>
           {trendsLoading ? (
             <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600"></div>
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600 dark:border-primary-400"></div>
             </div>
           ) : spendingTrends?.trends ? (
             <SpendingTrendsChart 
@@ -230,7 +201,7 @@ const DashboardPage: React.FC = () => {
               groupBy={spendingTrends.groupBy}
             />
           ) : (
-            <div className="h-64 flex items-center justify-center text-gray-500">
+            <div className="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
               <div className="text-center">
                 <p className="text-lg mb-2">No trend data available</p>
                 <p className="text-sm">Add some transactions to see spending trends</p>
@@ -240,8 +211,8 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Category Breakdown */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Top Categories
           </h3>
           
@@ -262,13 +233,13 @@ const DashboardPage: React.FC = () => {
                         className="w-4 h-4 rounded-full mr-3"
                         style={{ backgroundColor: category.categoryColor }}
                       ></div>
-                      <span className="text-sm text-gray-600">{category.categoryName}</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">{category.categoryName}</span>
                     </div>
                     <div className="text-right">
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-gray-900 dark:text-white">
                         ${category.total.toLocaleString()}
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
                         {category.count} transactions
                       </div>
                     </div>
@@ -277,7 +248,7 @@ const DashboardPage: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="text-center text-gray-500 py-8">
+            <div className="text-center text-gray-500 dark:text-gray-400 py-8">
               <p className="text-lg mb-2">No category data available</p>
               <p className="text-sm">Add some expense transactions to see category breakdown</p>
             </div>
@@ -288,30 +259,30 @@ const DashboardPage: React.FC = () => {
       {/* Recent Transactions and Receipt Summary */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Transactions */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Recent Transactions
           </h3>
           <div className="space-y-3">
             {stats?.recentTransactions?.slice(0, 5).map((transaction) => (
               <div key={transaction._id} className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
                     {transaction.description}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     {new Date(transaction.date).toLocaleDateString()}
                   </p>
                 </div>
                 <span className={`text-sm font-medium ${
-                  transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
+                  transaction.type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
                 }`}>
                   {transaction.type === 'income' ? '+' : '-'}
                   ${transaction.amount.toLocaleString()}
                 </span>
               </div>
             )) || (
-              <div className="text-center text-gray-500 py-8">
+              <div className="text-center text-gray-500 dark:text-gray-400 py-8">
                 No recent transactions
               </div>
             )}
@@ -319,30 +290,30 @@ const DashboardPage: React.FC = () => {
         </div>
         
         {/* Receipt Summary */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Receipt Processing
           </h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Total Receipts</span>
-              <span className="font-medium">{stats?.receiptSummary.total || 0}</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">Total Receipts</span>
+              <span className="font-medium text-gray-900 dark:text-white">{stats?.receiptSummary.total || 0}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Processed</span>
-              <span className="font-medium text-green-600">
+              <span className="text-sm text-gray-600 dark:text-gray-400">Processed</span>
+              <span className="font-medium text-green-600 dark:text-green-400">
                 {stats?.receiptSummary.processed || 0}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Pending</span>
-              <span className="font-medium text-yellow-600">
+              <span className="text-sm text-gray-600 dark:text-gray-400">Pending</span>
+              <span className="font-medium text-yellow-600 dark:text-yellow-400">
                 {stats?.receiptSummary.pending || 0}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Failed</span>
-              <span className="font-medium text-red-600">
+              <span className="text-sm text-gray-600 dark:text-gray-400">Failed</span>
+              <span className="font-medium text-red-600 dark:text-red-400">
                 {stats?.receiptSummary.failed || 0}
               </span>
             </div>

@@ -1,0 +1,58 @@
+Date,Type,Amount,Description,Category,Payment Method,Location,Notes
+2025-04-01,expense,45.50,Grocery shopping,Food & Dining,credit_card,Walmart,Weekly groceries
+2025-04-02,income,3500.00,Salary deposit,Salary,bank_transfer,Company Bank,Monthly salary
+2025-04-03,expense,125.00,Electric bill,Bills & Utilities,bank_transfer,Electric Company,Monthly electricity
+2025-04-05,expense,32.75,Coffee and lunch,Food & Dining,credit_card,Starbucks,Meeting with client
+2025-04-07,expense,89.99,Internet bill,Bills & Utilities,bank_transfer,Internet Provider,Monthly internet
+2025-04-10,expense,250.00,Car maintenance,Transportation,credit_card,Auto Shop,Oil change and inspection
+2025-04-12,expense,75.60,Dinner with friends,Food & Dining,cash,Restaurant,Birthday celebration
+2025-04-15,income,500.00,Freelance work,Freelance,bank_transfer,Client,Web design project
+2025-04-18,expense,180.25,Clothing shopping,Shopping,credit_card,Mall,Spring wardrobe
+2025-04-20,expense,65.00,Gas station,Transportation,credit_card,Shell,Full tank
+2025-04-22,expense,120.00,Doctor visit,Healthcare,credit_card,Medical Center,Annual checkup
+2025-04-25,expense,95.30,Groceries,Food & Dining,debit_card,Target,Weekly shopping
+2025-04-28,expense,200.00,Phone bill,Bills & Utilities,bank_transfer,Mobile Carrier,Monthly phone plan
+2025-04-30,expense,50.00,Entertainment,Entertainment,cash,Movie Theater,Weekend movie
+2025-05-01,expense,55.80,Grocery shopping,Food & Dining,credit_card,Kroger,Weekly groceries
+2025-05-02,income,3500.00,Salary deposit,Salary,bank_transfer,Company Bank,Monthly salary
+2025-05-04,expense,150.00,Home repair,Home & Garden,credit_card,Hardware Store,Plumbing supplies
+2025-05-06,expense,42.50,Coffee and pastries,Food & Dining,debit_card,Local Cafe,Morning meeting
+2025-05-08,expense,300.00,Insurance premium,Insurance,bank_transfer,Insurance Company,Car insurance
+2025-05-10,expense,78.90,Gas station,Transportation,credit_card,BP,Weekly fill-up
+2025-05-12,income,750.00,Freelance project,Freelance,bank_transfer,Client,Mobile app design
+2025-05-15,expense,220.00,Clothing shopping,Shopping,credit_card,Department Store,Summer clothes
+2025-05-18,expense,90.00,Dinner date,Food & Dining,credit_card,Fine Dining,Anniversary dinner
+2025-05-20,expense,125.00,Gym membership,Health & Fitness,bank_transfer,Fitness Center,3-month membership
+2025-05-22,expense,185.50,Groceries,Food & Dining,debit_card,Whole Foods,Organic shopping
+2025-05-25,expense,67.25,Gas station,Transportation,credit_card,Chevron,Road trip fuel
+2025-05-28,expense,400.00,Rent utilities,Bills & Utilities,bank_transfer,Utility Company,Monthly utilities
+2025-05-30,expense,85.00,Entertainment,Entertainment,cash,Concert Venue,Live music show
+2025-06-01,expense,48.75,Grocery shopping,Food & Dining,credit_card,Safeway,Weekly groceries
+2025-06-02,income,3500.00,Salary deposit,Salary,bank_transfer,Company Bank,Monthly salary
+2025-06-03,expense,175.00,Car payment,Transportation,bank_transfer,Auto Loan,Monthly car payment
+2025-06-05,expense,38.90,Lunch meeting,Food & Dining,credit_card,Business Lunch,Client meeting
+2025-06-07,expense,95.00,Internet bill,Bills & Utilities,bank_transfer,Internet Provider,Monthly service
+2025-06-10,expense,280.00,Home improvement,Home & Garden,credit_card,Home Depot,Garden supplies
+2025-06-12,income,600.00,Bonus payment,Bonus,bank_transfer,Company Bank,Performance bonus
+2025-06-15,expense,145.60,Clothing shopping,Shopping,credit_card,Fashion Store,Professional attire
+2025-06-18,expense,72.30,Gas station,Transportation,credit_card,Shell,Weekly fuel
+2025-06-20,expense,160.00,Medical appointment,Healthcare,credit_card,Specialist,Dental cleaning
+2025-06-22,expense,110.50,Groceries,Food & Dining,debit_card,Market,Fresh produce
+2025-06-25,expense,55.00,Entertainment,Entertainment,cash,Arcade,Weekend fun
+2025-06-28,expense,190.00,Phone and cable,Bills & Utilities,bank_transfer,Service Provider,Monthly bundle
+2025-06-30,expense,125.00,Dinner out,Food & Dining,credit_card,Steakhouse,Month-end celebration
+2025-07-01,expense,52.40,Grocery shopping,Food & Dining,credit_card,Local Market,Weekly groceries
+2025-07-02,income,3500.00,Salary deposit,Salary,bank_transfer,Company Bank,Monthly salary
+2025-07-04,expense,85.00,Holiday celebration,Entertainment,cash,BBQ Supplies,4th of July party
+2025-07-06,expense,45.75,Coffee shop,Food & Dining,debit_card,Coffee House,Morning caffeine
+2025-07-08,expense,210.00,Electric bill,Bills & Utilities,bank_transfer,Electric Company,Summer AC usage
+2025-07-10,expense,320.00,Vacation savings,Travel,bank_transfer,Savings Account,Summer trip fund
+2025-07-12,income,800.00,Freelance work,Freelance,bank_transfer,Client,Logo design project
+2025-07-15,expense,165.80,Clothing shopping,Shopping,credit_card,Outlet Mall,Summer sale shopping
+2025-07-18,expense,89.60,Gas station,Transportation,credit_card,Exxon,Long distance trip
+2025-07-20,expense,135.00,Healthcare,Healthcare,credit_card,Pharmacy,Prescription medications
+2025-07-22,expense,98.25,Groceries,Food & Dining,debit_card,Supermarket,Weekly shopping
+2025-07-25,expense,75.00,Entertainment,Entertainment,cash,Mini Golf,Family activity
+2025-07-28,expense,245.00,Home maintenance,Home & Garden,credit_card,Service Company,HVAC maintenance
+2025-07-30,expense,115.50,Dinner celebration,Food & Dining,credit_card,Italian Restaurant,Promotion dinner
+2025-07-31,expense,68.90,Gas station,Transportation,credit_card,Gas Station,End of month fill-up

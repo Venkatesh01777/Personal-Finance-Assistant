@@ -23,7 +23,19 @@ const receiptSchema = new mongoose.Schema({
   mimetype: {
     type: String,
     required: [true, 'File type is required'],
-    enum: ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf']
+    enum: [
+      'image/jpeg', 
+      'image/png', 
+      'image/jpg', 
+      'image/gif',
+      'image/webp',
+      'application/pdf',
+      'text/csv',
+      'text/plain', // Some browsers detect CSV as text/plain
+      'application/csv',
+      'application/vnd.ms-excel', // .xls
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // .xlsx
+    ]
   },
   size: {
     type: Number,
@@ -110,6 +122,12 @@ const receiptSchema = new mongoose.Schema({
     default: null
   },
   
+  // Auto-created transactions from this receipt
+  createdTransactions: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Transaction'
+  }],
+  
   // Processing metadata
   processingAttempts: {
     type: Number,
@@ -140,7 +158,9 @@ receiptSchema.index({ 'parsedData.date.value': 1, userId: 1 });
 // Virtual for file URL
 receiptSchema.virtual('fileUrl').get(function() {
   if (this.filePath) {
-    return `${process.env.API_BASE_URL}/${this.filePath.replace(/\\/g, '/')}`;
+    // filePath is now stored as relative path (e.g., "uploads/receipts/filename.jpg")
+    const normalizedPath = this.filePath.replace(/\\/g, '/');
+    return `${process.env.API_BASE_URL || 'http://localhost:5000'}/${normalizedPath}`;
   }
   return null;
 });

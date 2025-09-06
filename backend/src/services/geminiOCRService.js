@@ -121,57 +121,89 @@ class GeminiOCRService {
    */
   createGeminiPrompt() {
     return `
-Analyze this receipt image and extract the following information. Return ONLY a valid JSON object with this exact structure:
+Analyze this receipt/financial document and extract transaction information. Return ONLY a valid JSON object with this exact structure:
 
 {
+  "documentType": "receipt|bank_statement|invoice|expense_report",
   "merchantName": {
     "value": "extracted store/merchant name",
     "confidence": 0.0-1.0
   },
-  "totalAmount": {
-    "value": 0.00,
-    "confidence": 0.0-1.0
-  },
-  "date": {
+  "documentDate": {
     "value": "YYYY-MM-DD",
     "confidence": 0.0-1.0
   },
+  "transactions": [
+    {
+      "description": "transaction description (e.g., 'Groceries at Walmart')",
+      "amount": 0.00,
+      "type": "expense|income",
+      "date": "YYYY-MM-DD",
+      "category": "food_dining|groceries|transportation|shopping|healthcare|entertainment|utilities|bills|salary|freelance|other",
+      "paymentMethod": "cash|credit_card|debit_card|bank_transfer|digital_wallet|other",
+      "location": "merchant/store location if available",
+      "notes": "additional notes or item details",
+      "confidence": 0.0-1.0
+    }
+  ],
   "items": [
     {
       "name": "item name",
       "price": 0.00,
       "quantity": 1,
+      "category": "item category",
       "confidence": 0.0-1.0
     }
   ],
-  "taxAmount": {
-    "value": 0.00,
+  "totals": {
+    "subtotal": {
+      "value": 0.00,
+      "confidence": 0.0-1.0
+    },
+    "taxAmount": {
+      "value": 0.00,
+      "confidence": 0.0-1.0
+    },
+    "totalAmount": {
+      "value": 0.00,
+      "confidence": 0.0-1.0
+    }
+  },
+  "paymentInfo": {
+    "method": "cash|credit_card|debit_card|bank_transfer|digital_wallet|other",
+    "lastFourDigits": "1234",
     "confidence": 0.0-1.0
   },
-  "category": {
-    "suggested": "groceries|food_dining|transportation|shopping|healthcare|entertainment|utilities|other",
-    "confidence": 0.0-1.0
-  },
-  "paymentMethod": {
-    "value": "cash|credit_card|debit_card|digital_wallet|other",
-    "confidence": 0.0-1.0
-  },
-  "subtotal": {
-    "value": 0.00,
-    "confidence": 0.0-1.0
-  },
-  "rawText": "all extracted text from receipt",
+  "rawText": "all extracted text from document",
   "confidence": 0.0-1.0
 }
 
 Rules:
+- For single receipts: Create ONE transaction with the total amount
+- For bank statements/expense reports: Create MULTIPLE transactions for each line item
+- For CSV/Excel data: Extract each row as a separate transaction
 - Extract all visible text accurately
-- Identify the main total amount (not subtotals)
+- Identify the main total amount (not subtotals) for single transactions
 - Convert dates to YYYY-MM-DD format
+- Use descriptive transaction descriptions (e.g., "Groceries at Walmart", "Coffee at Starbucks")
 - Suggest the most appropriate category based on merchant and items
+- For expenses, amount should be positive (we'll handle the expense type separately)
 - Set confidence based on text clarity and certainty
-- If information is unclear or missing, set confidence to 0 and value to empty/zero
+- If information is unclear or missing, set confidence to 0 and use reasonable defaults
+- For receipts, typically type should be "expense"
 - Return ONLY the JSON, no additional text or explanations
+
+Categories mapping:
+- Restaurants, cafes, food purchases → "food_dining"
+- Supermarkets, grocery stores → "groceries"  
+- Gas stations, uber, taxi → "transportation"
+- Retail stores, online shopping → "shopping"
+- Hospitals, pharmacies, medical → "healthcare"
+- Movies, games, subscriptions → "entertainment"
+- Electricity, water, internet → "utilities"
+- Rent, phone, insurance → "bills"
+- Salary deposits → "salary"
+- Contract work payments → "freelance"
 `;
   }
 
@@ -201,16 +233,23 @@ Rules:
       logger.error('Failed to parse Gemini response:', error);
       logger.debug('Raw response:', responseText);
       
-      // Return fallback structure
+      // Return fallback structure with new format
       return {
+        documentType: 'receipt',
         merchantName: { value: '', confidence: 0 },
-        totalAmount: { value: 0, confidence: 0 },
-        date: { value: new Date().toISOString().split('T')[0], confidence: 0 },
+        documentDate: { value: new Date().toISOString().split('T')[0], confidence: 0 },
+        transactions: [],
         items: [],
-        taxAmount: { value: 0, confidence: 0 },
-        category: { suggested: 'other', confidence: 0 },
-        paymentMethod: { value: 'other', confidence: 0 },
-        subtotal: { value: 0, confidence: 0 },
+        totals: {
+          subtotal: { value: 0, confidence: 0 },
+          taxAmount: { value: 0, confidence: 0 },
+          totalAmount: { value: 0, confidence: 0 }
+        },
+        paymentInfo: {
+          method: 'other',
+          lastFourDigits: '',
+          confidence: 0
+        },
         rawText: responseText,
         confidence: 0.1
       };
@@ -224,14 +263,26 @@ Rules:
    */
   formatParsedData(geminiData) {
     return {
+      documentType: geminiData.documentType || 'receipt',
       merchantName: geminiData.merchantName || { value: '', confidence: 0 },
-      totalAmount: geminiData.totalAmount || { value: 0, confidence: 0 },
-      date: this.formatDateValue(geminiData.date),
+      documentDate: this.formatDateValue(geminiData.documentDate),
+      transactions: geminiData.transactions || [],
       items: geminiData.items || [],
-      taxAmount: geminiData.taxAmount || { value: 0, confidence: 0 },
+      totals: {
+        subtotal: geminiData.totals?.subtotal || { value: 0, confidence: 0 },
+        taxAmount: geminiData.totals?.taxAmount || { value: 0, confidence: 0 },
+        totalAmount: geminiData.totals?.totalAmount || { value: 0, confidence: 0 }
+      },
+      paymentInfo: geminiData.paymentInfo || { method: 'other', lastFourDigits: '', confidence: 0 },
+      rawText: geminiData.rawText || '',
+      
+      // Legacy fields for backward compatibility
+      totalAmount: geminiData.totals?.totalAmount || geminiData.totalAmount || { value: 0, confidence: 0 },
+      date: this.formatDateValue(geminiData.documentDate || geminiData.date),
+      taxAmount: geminiData.totals?.taxAmount || geminiData.taxAmount || { value: 0, confidence: 0 },
       category: geminiData.category || { suggested: 'other', confidence: 0 },
-      paymentMethod: geminiData.paymentMethod || { value: 'other', confidence: 0 },
-      subtotal: geminiData.subtotal || { value: 0, confidence: 0 }
+      paymentMethod: geminiData.paymentInfo?.method ? { value: geminiData.paymentInfo.method, confidence: geminiData.paymentInfo.confidence } : { value: 'other', confidence: 0 },
+      subtotal: geminiData.totals?.subtotal || geminiData.subtotal || { value: 0, confidence: 0 }
     };
   }
 

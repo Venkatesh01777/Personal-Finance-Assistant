@@ -25,8 +25,16 @@ const app = express();
 // Trust proxy for rate limiting behind reverse proxy
 app.set('trust proxy', 1);
 
-// Security middleware
-app.use(helmet());
+// Security middleware with relaxed content security policy
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      "img-src": ["'self'", "data:", "blob:", "http://localhost:*", "https://localhost:*"],
+    },
+  },
+}));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -50,14 +58,25 @@ const corsOptions = {
       process.env.FRONTEND_URL,
       'http://localhost:3000',
       'http://localhost:5173', // Vite default port
+      'http://localhost:3001', // Alternative frontend port
+      'http://127.0.0.1:5173', // Alternative localhost format
+      'http://127.0.0.1:3000',
     ];
+    
+    console.log('CORS request from origin:', origin);
     
     // Allow requests with no origin (mobile apps, Postman, etc.)
     if (!origin) return callback(null, true);
     
+    // Temporarily allow all localhost origins for debugging
+    if (origin && origin.includes('localhost')) {
+      return callback(null, true);
+    }
+    
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
+      console.log('CORS blocked origin:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -65,14 +84,39 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 
-app.use(cors(corsOptions));
+// Temporary: Disable CORS entirely for debugging
+app.use(cors());
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Static file serving for uploads
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// Static file serving for uploads with CORS headers
+app.use('/uploads', (req, res, next) => {
+  // Add CORS headers for static files
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  // Add proper content type for images
+  const ext = path.extname(req.path).toLowerCase();
+  if (ext === '.png') res.type('image/png');
+  else if (ext === '.jpg' || ext === '.jpeg') res.type('image/jpeg');
+  else if (ext === '.gif') res.type('image/gif');
+  else if (ext === '.pdf') res.type('application/pdf');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  
+  next();
+}, express.static(path.join(__dirname, '../uploads'), {
+  setHeaders: (res, path) => {
+    res.set('Cross-Origin-Resource-Policy', 'cross-origin');
+  }
+}));
 
 // Health check endpoint
 app.get('/health', (req, res) => {

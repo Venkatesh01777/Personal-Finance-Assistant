@@ -49,14 +49,14 @@ const RegisterPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 text-center">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center">
           Create your account
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
+        <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
           Already have an account?{' '}
           <Link
             to="/login"
-            className="font-medium text-primary-600 hover:text-primary-500"
+            className="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
           >
             Sign in
           </Link>
@@ -66,7 +66,7 @@ const RegisterPage: React.FC = () => {
       <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               First Name
             </label>
             <div className="mt-1">
@@ -80,17 +80,17 @@ const RegisterPage: React.FC = () => {
                 })}
                 type="text"
                 autoComplete="given-name"
-                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                 placeholder="First name"
               />
               {errors.firstName && (
-                <p className="mt-1 text-sm text-red-600">{errors.firstName.message}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.firstName.message}</p>
               )}
             </div>
           </div>
 
           <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Last Name
             </label>
             <div className="mt-1">
@@ -104,18 +104,18 @@ const RegisterPage: React.FC = () => {
                 })}
                 type="text"
                 autoComplete="family-name"
-                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                 placeholder="Last name"
               />
               {errors.lastName && (
-                <p className="mt-1 text-sm text-red-600">{errors.lastName.message}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.lastName.message}</p>
               )}
             </div>
           </div>
         </div>
 
         <div>
-          <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Username
           </label>
           <div className="mt-1">
@@ -133,17 +133,17 @@ const RegisterPage: React.FC = () => {
               })}
               type="text"
               autoComplete="username"
-              className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               placeholder="Choose a username"
             />
             {errors.username && (
-              <p className="mt-1 text-sm text-red-600">{errors.username.message}</p>
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.username.message}</p>
             )}
           </div>
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Email address
           </label>
           <div className="mt-1">
@@ -157,17 +157,17 @@ const RegisterPage: React.FC = () => {
               })}
               type="email"
               autoComplete="email"
-              className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               placeholder="Enter your email"
             />
             {errors.email && (
-              <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email.message}</p>
             )}
           </div>
         </div>
 
         <div>
-          <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Date of Birth
           </label>
           <div className="mt-1">
@@ -177,16 +177,16 @@ const RegisterPage: React.FC = () => {
               })}
               type="date"
               autoComplete="bday"
-              className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
             />
             {errors.dateOfBirth && (
-              <p className="mt-1 text-sm text-red-600">{errors.dateOfBirth.message}</p>
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.dateOfBirth.message}</p>
             )}
           </div>
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Password
           </label>
           <div className="mt-1 relative">
@@ -204,7 +204,7 @@ const RegisterPage: React.FC = () => {
               })}
               type={showPassword ? 'text' : 'password'}
               autoComplete="new-password"
-              className="appearance-none block w-full px-3 py-2 pr-10 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              className="appearance-none block w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               placeholder="Create a password"
             />
             <button
@@ -213,19 +213,19 @@ const RegisterPage: React.FC = () => {
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
-                <EyeSlashIcon className="h-5 w-5 text-gray-400" />
+                <EyeSlashIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
               ) : (
-                <EyeIcon className="h-5 w-5 text-gray-400" />
+                <EyeIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
               )}
             </button>
             {errors.password && (
-              <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password.message}</p>
             )}
           </div>
         </div>
 
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Confirm Password
           </label>
           <div className="mt-1">
@@ -237,11 +237,11 @@ const RegisterPage: React.FC = () => {
               })}
               type="password"
               autoComplete="new-password"
-              className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               placeholder="Confirm your password"
             />
             {errors.confirmPassword && (
-              <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.confirmPassword.message}</p>
             )}
           </div>
         </div>
@@ -256,13 +256,13 @@ const RegisterPage: React.FC = () => {
           </button>
         </div>
 
-        <div className="text-xs text-gray-500 text-center">
+        <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
           By creating an account, you agree to our{' '}
-          <a href="#" className="text-primary-600 hover:text-primary-500">
+          <a href="#" className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
             Terms of Service
           </a>{' '}
           and{' '}
-          <a href="#" className="text-primary-600 hover:text-primary-500">
+          <a href="#" className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
             Privacy Policy
           </a>
         </div>

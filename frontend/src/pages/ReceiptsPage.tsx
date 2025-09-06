@@ -71,13 +71,13 @@ const ReceiptsPage: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'processed':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200';
       case 'processing':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200';
       case 'failed':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200';
     }
   };
 
@@ -86,12 +86,12 @@ const ReceiptsPage: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Receipts</h1>
-          <p className="text-gray-600">Upload and process your receipts with AI</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Receipts</h1>
+          <p className="text-gray-600 dark:text-gray-400">Upload and process your receipts with AI</p>
         </div>
         <button 
           onClick={() => setIsUploadOpen(true)}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 dark:bg-primary-700 hover:bg-primary-700 dark:hover:bg-primary-800"
         >
           <PlusIcon className="h-4 w-4 mr-2" />
           Upload Receipt
@@ -99,14 +99,14 @@ const ReceiptsPage: React.FC = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Status
             </label>
             <select
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               value={filters.status}
               onChange={(e) => setFilters({ ...filters, status: e.target.value })}
             >
@@ -118,29 +118,29 @@ const ReceiptsPage: React.FC = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Start Date
             </label>
             <input
               type="date"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               value={filters.startDate}
               onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               End Date
             </label>
             <input
               type="date"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               value={filters.endDate}
               onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
             />
           </div>
           <div className="flex items-end">
-            <button className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+            <button className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
               <FunnelIcon className="h-4 w-4 mr-2" />
               Apply Filters
             </button>
@@ -151,13 +151,13 @@ const ReceiptsPage: React.FC = () => {
       {/* Receipts Grid */}
       {isLoading ? (
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 dark:border-primary-400"></div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {receipts?.data?.map((receipt) => (
-            <div key={receipt._id} className="bg-white rounded-lg shadow overflow-hidden">
-              <div className="aspect-w-16 aspect-h-9 bg-gray-200">
+            <div key={receipt._id} className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+              <div className="aspect-w-16 aspect-h-9 bg-gray-200 dark:bg-gray-700">
                 {receipt.fileUrl ? (
                   <img
                     src={receipt.fileUrl}
@@ -165,7 +165,7 @@ const ReceiptsPage: React.FC = () => {
                     className="w-full h-48 object-cover"
                   />
                 ) : (
-                  <div className="flex items-center justify-center h-48 bg-gray-100">
+                  <div className="flex items-center justify-center h-48 bg-gray-100 dark:bg-gray-700">
                     <span className="text-gray-400 text-sm">No preview available</span>
                   </div>
                 )}
@@ -173,7 +173,7 @@ const ReceiptsPage: React.FC = () => {
               
               <div className="p-6">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-gray-900 truncate">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
                     {receipt.originalName}
                   </h3>
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(receipt.status)}`}>
@@ -181,7 +181,7 @@ const ReceiptsPage: React.FC = () => {
                   </span>
                 </div>
                 
-                <p className="text-sm text-gray-500 mb-4">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                   Uploaded: {new Date(receipt.createdAt).toLocaleDateString()}
                 </p>
                 
@@ -189,20 +189,20 @@ const ReceiptsPage: React.FC = () => {
                   <div className="space-y-2 mb-4">
                     {receipt.parsedData.merchantName?.value && (
                       <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">Merchant:</span>
-                        <span className="text-sm font-medium">{receipt.parsedData.merchantName.value}</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Merchant:</span>
+                        <span className="text-sm font-medium text-gray-900 dark:text-white">{receipt.parsedData.merchantName.value}</span>
                       </div>
                     )}
                     {receipt.parsedData.totalAmount?.value && (
                       <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">Amount:</span>
-                        <span className="text-sm font-medium">${receipt.parsedData.totalAmount.value.toLocaleString()}</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Amount:</span>
+                        <span className="text-sm font-medium text-gray-900 dark:text-white">${receipt.parsedData.totalAmount.value.toLocaleString()}</span>
                       </div>
                     )}
                     {receipt.parsedData.date?.value && (
                       <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">Date:</span>
-                        <span className="text-sm font-medium">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Date:</span>
+                        <span className="text-sm font-medium text-gray-900 dark:text-white">
                           {new Date(receipt.parsedData.date.value).toLocaleDateString()}
                         </span>
                       </div>
@@ -213,7 +213,7 @@ const ReceiptsPage: React.FC = () => {
                 <div className="flex space-x-2">
                   <button 
                     onClick={() => handleViewReceipt(receipt)}
-                    className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                    className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                   >
                     <EyeIcon className="h-4 w-4 mr-2" />
                     View
@@ -221,7 +221,7 @@ const ReceiptsPage: React.FC = () => {
                   <button 
                     onClick={() => handleProcessReceipt(receipt._id)}
                     disabled={processingReceipts.has(receipt._id) || receipt.status === 'processing'}
-                    className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 dark:bg-primary-700 hover:bg-primary-700 dark:hover:bg-primary-800 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <ArrowPathIcon className={`h-4 w-4 mr-2 ${processingReceipts.has(receipt._id) || receipt.status === 'processing' ? 'animate-spin' : ''}`} />
                     {processingReceipts.has(receipt._id) || receipt.status === 'processing' ? 'Processing...' : 'Process'}
@@ -231,7 +231,7 @@ const ReceiptsPage: React.FC = () => {
             </div>
           )) || (
             <div className="col-span-full text-center py-12">
-              <p className="text-gray-500">No receipts found</p>
+              <p className="text-gray-500 dark:text-gray-400">No receipts found</p>
             </div>
           )}
         </div>
@@ -239,18 +239,18 @@ const ReceiptsPage: React.FC = () => {
 
       {/* Pagination */}
       {receipts?.meta?.pagination && (
-        <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 rounded-lg shadow">
+        <div className="bg-white dark:bg-gray-800 px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 rounded-lg shadow">
           <div className="flex-1 flex justify-between sm:hidden">
-            <button className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+            <button className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
               Previous
             </button>
-            <button className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+            <button className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
               Next
             </button>
           </div>
           <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm text-gray-700">
+              <p className="text-sm text-gray-700 dark:text-gray-300">
                 Showing{' '}
                 <span className="font-medium">
                   {(receipts.meta.pagination.currentPage - 1) * receipts.meta.pagination.itemsPerPage + 1}

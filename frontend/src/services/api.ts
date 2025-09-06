@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { ApiResponse, ApiError } from '@/types';
+import { ApiResponse } from '@/types';
 
 class ApiClient {
   private client: AxiosInstance;
@@ -89,6 +89,13 @@ class ApiClient {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
+    });
+    return response.data;
+  }
+
+  async getBlob(url: string): Promise<Blob> {
+    const response = await this.client.get(url, {
+      responseType: 'blob'
     });
     return response.data;
   }

@@ -12,27 +12,24 @@ export const analyticsService = {
     period?: 'week' | 'month' | 'quarter' | 'year' | 'all';
   }): Promise<DashboardStats> {
     const response = await apiClient.get<DashboardStats>('/analytics/dashboard', filters);
-    console.log('Analytics API Response:', response);
     return response.data; // response is ApiResponse<DashboardStats>, so response.data is DashboardStats
   },
 
   // Spending trends
   async getSpendingTrends(filters?: {
-    period?: 'week' | 'month' | 'quarter' | 'year' | 'last6months' | 'last12months';
+    period?: 'week' | 'month' | 'quarter' | 'year' | 'all' | 'last6months' | 'last12months';
     groupBy?: 'day' | 'week' | 'month';
   }): Promise<SpendingTrends> {
     const response = await apiClient.get<SpendingTrends>('/analytics/trends', filters);
-    console.log('Trends API Response:', response);
     return response.data; // response is ApiResponse<SpendingTrends>, so response.data is SpendingTrends
   },
 
   // Category breakdown
   async getCategoryBreakdown(filters?: {
     type?: 'income' | 'expense';
-    period?: 'week' | 'month' | 'quarter' | 'year';
+    period?: 'week' | 'month' | 'quarter' | 'year' | 'all';
   }): Promise<CategoryBreakdown> {
     const response = await apiClient.get<CategoryBreakdown>('/analytics/categories', filters);
-    console.log('Category API Response:', response);
     return response.data; // response is ApiResponse<CategoryBreakdown>, so response.data is CategoryBreakdown
   },
 

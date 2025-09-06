@@ -148,6 +148,13 @@ const getDashboardOverview = catchAsync(async (req, res, next) => {
   summary.balance = summary.income.total - summary.expenses.total;
   summary.totalTransactions = summary.income.count + summary.expenses.count;
 
+  // Calculate percentages for top categories
+  const totalExpenses = topCategories.reduce((sum, cat) => sum + cat.total, 0);
+  const enrichedTopCategories = topCategories.map(category => ({
+    ...category,
+    percentage: totalExpenses > 0 ? ((category.total / totalExpenses) * 100).toFixed(2) : '0'
+  }));
+
   // Format receipt stats
   const receiptSummary = {
     total: 0,
@@ -165,12 +172,22 @@ const getDashboardOverview = catchAsync(async (req, res, next) => {
     period,
     dateRange: { startDate, endDate },
     summary,
-    topCategories,
+    topCategories: enrichedTopCategories,
     recentTransactions,
     receiptSummary
   };
 
   sendSuccess(res, 200, 'Dashboard overview retrieved successfully', dashboardData);
+  
+  // Debug logging (only when no data found)
+  if (summary.totalTransactions === 0) {
+    console.log('Analytics Dashboard - No Data Found:', {
+      userId: req.user._id,
+      period,
+      dateRange: { startDate, endDate },
+      totalTransactions: summary.totalTransactions
+    });
+  }
 });
 
 /**
@@ -202,6 +219,10 @@ const getSpendingTrends = catchAsync(async (req, res, next) => {
       break;
     case 'last12months':
       startDate = new Date(now.getFullYear() - 1, now.getMonth(), 1);
+      break;
+    case 'all':
+      // Get all transactions ever (for testing)
+      startDate = new Date(2000, 0, 1); // Start from 2000
       break;
     default:
       startDate = new Date(now.getFullYear(), 0, 1); // Default to current year
@@ -297,6 +318,17 @@ const getSpendingTrends = catchAsync(async (req, res, next) => {
     dateRange: { startDate, endDate },
     trends: Object.values(formattedTrends)
   });
+  
+  // Debug logging (only when no data found)
+  if (Object.keys(formattedTrends).length === 0) {
+    console.log('Spending Trends - No Data Found:', {
+      userId: req.user._id,
+      period,
+      groupBy,
+      dateRange: { startDate, endDate },
+      trendsCount: trends.length
+    });
+  }
 });
 
 /**
@@ -323,8 +355,12 @@ const getCategoryBreakdown = catchAsync(async (req, res, next) => {
     case 'year':
       startDate = new Date(now.getFullYear(), 0, 1);
       break;
+    case 'all':
+      // Get all transactions ever (for testing)
+      startDate = new Date(2000, 0, 1); // Start from 2000
+      break;
     default:
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      startDate = new Date(now.getFullYear(), 0, 1); // Default to current year
   }
 
   const breakdown = await Transaction.aggregate([
@@ -375,6 +411,17 @@ const getCategoryBreakdown = catchAsync(async (req, res, next) => {
     categoryCount: breakdown.length,
     breakdown: enrichedBreakdown
   });
+  
+  // Debug logging (only when no data found)
+  if (breakdown.length === 0) {
+    console.log('Category Breakdown - No Data Found:', {
+      userId: req.user._id,
+      type,
+      period,
+      dateRange: { startDate, endDate },
+      categoryCount: breakdown.length
+    });
+  }
 });
 
 /**

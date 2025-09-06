@@ -124,6 +124,13 @@ export const receiptService = {
 
   // Download receipt file
   getReceiptFileUrl(receipt: Receipt): string {
-    return receipt.fileUrl || `http://localhost:5000/${receipt.filePath}`;
+    // Use the authenticated API endpoint for receipt images
+    return `http://localhost:5000/api/receipts/${receipt._id}/image`;
+  },
+
+  // Get receipt image as authenticated blob URL
+  async getReceiptImageBlob(id: string): Promise<string> {
+    const response = await apiClient.getBlob(`/receipts/${id}/image`);
+    return URL.createObjectURL(response);
   },
 };

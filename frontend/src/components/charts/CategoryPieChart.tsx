@@ -15,6 +15,7 @@ interface CategoryData {
   categoryIcon: string;
   total: number;
   count: number;
+  percentage?: string;
 }
 
 interface CategoryPieChartProps {
@@ -22,12 +23,16 @@ interface CategoryPieChartProps {
 }
 
 const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ categories }) => {
+  // Calculate total for percentage calculation
+  const totalAmount = categories.reduce((sum, cat) => sum + cat.total, 0);
+  
   // Prepare data for the pie chart
   const chartData = categories.map((category: CategoryData) => ({
     name: category.categoryName,
     value: category.total,
     color: category.categoryColor || '#8884d8',
-    count: category.count
+    count: category.count,
+    percentage: totalAmount > 0 ? ((category.total / totalAmount) * 100).toFixed(1) : '0'
   }));
 
   // Custom tooltip
@@ -44,7 +49,7 @@ const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ categories }) => {
             Transactions: {data.count}
           </p>
           <p className="text-sm text-gray-600">
-            {((data.value / chartData.reduce((sum, item) => sum + item.value, 0)) * 100).toFixed(1)}%
+            {data.percentage}%
           </p>
         </div>
       );
@@ -91,9 +96,7 @@ const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ categories }) => {
             outerRadius={60}
             fill="#8884d8"
             dataKey="value"
-            label={({ value, total }) => 
-              `${((value / (total || 1)) * 100).toFixed(0)}%`
-            }
+            label={({ percentage }) => `${percentage}%`}
             labelLine={false}
           >
             {chartData.map((entry, index) => (

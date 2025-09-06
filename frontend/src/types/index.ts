@@ -181,6 +181,7 @@ export interface DashboardStats {
     categoryIcon: string;
     total: number;
     count: number;
+    percentage?: string;
   }>;
   recentTransactions: Transaction[];
   receiptSummary: {

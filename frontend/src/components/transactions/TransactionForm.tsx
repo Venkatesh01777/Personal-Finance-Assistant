@@ -17,12 +17,6 @@ const transactionSchema = z.object({
   location: z.string().optional(),
   tags: z.array(z.string()).optional(),
   notes: z.string().optional(),
-  isRecurring: z.boolean().optional(),
-  recurringDetails: z.object({
-    frequency: z.string(),
-    interval: z.number(),
-    endDate: z.string().optional(),
-  }).optional(),
 });
 
 interface TransactionFormProps {
@@ -48,7 +42,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     watch,
     reset,
     setValue,
-    formState: { errors, isSubmitting }
+    formState: { errors }
   } = useForm<TransactionFormData>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
@@ -61,12 +55,10 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
       location: '',
       tags: [],
       notes: '',
-      isRecurring: false,
     }
   });
 
   const watchType = watch('type');
-  const watchIsRecurring = watch('isRecurring');
 
   // Reset form when transaction changes
   useEffect(() => {
@@ -83,8 +75,6 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         location: transaction.location || '',
         tags: transaction.tags || [],
         notes: transaction.notes || '',
-        isRecurring: transaction.isRecurring || false,
-        recurringDetails: transaction.recurringDetails || undefined,
       };
       
       console.log('Resetting form with data:', formData);
@@ -101,7 +91,6 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         location: '',
         tags: [],
         notes: '',
-        isRecurring: false,
       };
       
       console.log('Resetting form with default data:', defaultData);
@@ -115,6 +104,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-overview'] });
       queryClient.invalidateQueries({ queryKey: ['spending-trends'] });
       queryClient.invalidateQueries({ queryKey: ['category-breakdown'] });
       toast.success('Transaction created successfully');
@@ -131,6 +121,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-overview'] });
       queryClient.invalidateQueries({ queryKey: ['spending-trends'] });
       queryClient.invalidateQueries({ queryKey: ['category-breakdown'] });
       toast.success('Transaction updated successfully');
@@ -214,14 +205,14 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             {transaction ? 'Edit Transaction' : 'Add Transaction'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -232,9 +223,9 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Debug form errors */}
           {Object.keys(errors).length > 0 && (
-            <div className="bg-red-50 border border-red-200 rounded-md p-4">
-              <h4 className="text-red-800 font-medium">Form Validation Errors:</h4>
-              <ul className="mt-2 text-red-700 text-sm">
+            <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-md p-4">
+              <h4 className="text-red-800 dark:text-red-200 font-medium">Form Validation Errors:</h4>
+              <ul className="mt-2 text-red-700 dark:text-red-300 text-sm">
                 {Object.entries(errors).map(([field, error]) => (
                   <li key={field}>
                     {field}: {error?.message || 'Invalid value'}
@@ -246,7 +237,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
           <div className="grid grid-cols-2 gap-4">
             {/* Transaction Type */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Type
               </label>
               <Controller
@@ -255,7 +246,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 render={({ field }) => (
                   <select
                     {...field}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                   >
                     <option value="expense">Expense</option>
                     <option value="income">Income</option>
@@ -269,7 +260,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Category
               </label>
               <Controller
@@ -278,7 +269,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 render={({ field }) => (
                   <select
                     {...field}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                   >
                     <option value="">Select Category</option>
                     {categories
@@ -292,7 +283,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 )}
               />
               {errors.categoryId && (
-                <p className="mt-1 text-sm text-red-600">{errors.categoryId.message}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.categoryId.message}</p>
               )}
             </div>
           </div>
@@ -300,7 +291,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
           <div className="grid grid-cols-2 gap-4">
             {/* Amount */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Amount
               </label>
               <Controller
@@ -313,18 +304,18 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                     step="0.01"
                     min="0"
                     onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                   />
                 )}
               />
               {errors.amount && (
-                <p className="mt-1 text-sm text-red-600">{errors.amount.message}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.amount.message}</p>
               )}
             </div>
 
             {/* Date */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Date
               </label>
               <Controller
@@ -334,19 +325,19 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                   <input
                     {...field}
                     type="date"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                   />
                 )}
               />
               {errors.date && (
-                <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.date.message}</p>
               )}
             </div>
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Description
             </label>
             <Controller
@@ -356,19 +347,19 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 <input
                   {...field}
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                 />
               )}
             />
             {errors.description && (
-              <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.description.message}</p>
             )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             {/* Payment Method */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Payment Method
               </label>
               <Controller
@@ -377,7 +368,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 render={({ field }) => (
                   <select
                     {...field}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                   >
                     <option value="cash">Cash</option>
                     <option value="credit_card">Credit Card</option>
@@ -390,13 +381,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 )}
               />
               {errors.paymentMethod && (
-                <p className="mt-1 text-sm text-red-600">{errors.paymentMethod.message}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.paymentMethod.message}</p>
               )}
             </div>
 
             {/* Location */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Location (Optional)
               </label>
               <Controller
@@ -406,7 +397,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                   <input
                     {...field}
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                   />
                 )}
               />
@@ -415,20 +406,20 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
           {/* Tags */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Tags (Optional)
             </label>
             <div className="flex flex-wrap gap-2 mb-2">
               {tags.map(tag => (
                 <span
                   key={tag}
-                  className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded-md"
+                  className="inline-flex items-center px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm rounded-md"
                 >
                   {tag}
                   <button
                     type="button"
                     onClick={() => removeTag(tag)}
-                    className="ml-1 text-blue-600 hover:text-blue-800"
+                    className="ml-1 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                   >
                     ×
                   </button>
@@ -442,12 +433,12 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
                 placeholder="Add a tag"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
               />
               <button
                 type="button"
                 onClick={addTag}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-800"
               >
                 Add
               </button>
@@ -456,7 +447,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Notes (Optional)
             </label>
             <Controller
@@ -466,90 +457,11 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 <textarea
                   {...field}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                 />
               )}
             />
           </div>
-
-          {/* Recurring Transaction */}
-          <div>
-            <Controller
-              name="isRecurring"
-              control={control}
-              render={({ field }) => (
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={field.value}
-                    onChange={field.onChange}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <span className="ml-2 text-sm text-gray-700">Recurring Transaction</span>
-                </label>
-              )}
-            />
-          </div>
-
-          {watchIsRecurring && (
-            <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-md">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Frequency
-                </label>
-                <Controller
-                  name="recurringDetails.frequency"
-                  control={control}
-                  render={({ field }) => (
-                    <select
-                      {...field}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">Select Frequency</option>
-                      <option value="daily">Daily</option>
-                      <option value="weekly">Weekly</option>
-                      <option value="monthly">Monthly</option>
-                      <option value="yearly">Yearly</option>
-                    </select>
-                  )}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Interval
-                </label>
-                <Controller
-                  name="recurringDetails.interval"
-                  control={control}
-                  render={({ field }) => (
-                    <input
-                      {...field}
-                      type="number"
-                      min="1"
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  )}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  End Date (Optional)
-                </label>
-                <Controller
-                  name="recurringDetails.endDate"
-                  control={control}
-                  render={({ field }) => (
-                    <input
-                      {...field}
-                      type="date"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  )}
-                />
-              </div>
-            </div>
-          )}
 
           {/* Form Actions */}
           <div className="flex justify-end space-x-4 pt-6">
@@ -557,14 +469,14 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
             <button
               type="button"
               onClick={debugFormState}
-              className="px-4 py-2 text-gray-700 bg-yellow-200 rounded-md hover:bg-yellow-300 transition-colors"
+              className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-yellow-200 dark:bg-yellow-800 rounded-md hover:bg-yellow-300 dark:hover:bg-yellow-700 transition-colors"
             >
               Debug
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+              className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
             >
               Cancel
             </button>
@@ -572,7 +484,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
               type="submit"
               onClick={() => console.log('🚀 Submit button clicked!')}
               disabled={createMutation.isPending || updateMutation.isPending}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+              className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-800 disabled:opacity-50 transition-colors"
             >
               {(createMutation.isPending || updateMutation.isPending) ? 'Saving...' : transaction ? 'Update Transaction' : 'Create Transaction'}
             </button>

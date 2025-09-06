@@ -18,22 +18,32 @@ import SettingsPage from './pages/SettingsPage';
 
 // Loading component
 const LoadingScreen = () => (
-  <div className="min-h-screen flex items-center justify-center">
+  <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
     <div className="text-center">
-      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-      <p className="mt-4 text-gray-600">Loading...</p>
+      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 dark:border-blue-400 mx-auto"></div>
+      <p className="mt-4 text-gray-600 dark:text-gray-400">Loading...</p>
     </div>
   </div>
 );
 
 function App() {
-  const { isAuthenticated, isAuthLoading } = useAppStore();
+  const { isAuthenticated, isAuthLoading, theme } = useAppStore();
 
   useEffect(() => {
     // Initialize authentication on app start
     console.log('App: Initializing authentication...');
     authService.initializeAuth();
   }, []); // Empty dependency array to run only once on mount
+
+  // Apply theme to document root
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [theme]);
 
   // Show loading screen while authentication is being initialized
   if (isAuthLoading) {

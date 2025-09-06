@@ -35,4 +35,7 @@ router.patch('/:id/unlink-transaction', receiptController.unlinkReceiptFromTrans
 // Analytics
 router.get('/analytics/stats', validateQuery, receiptController.getReceiptStats);
 
+// Serve receipt images/files
+router.get('/:id/image', receiptController.getReceiptFile);
+
 module.exports = router;
